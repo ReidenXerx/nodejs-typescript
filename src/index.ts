@@ -22,6 +22,7 @@ import { ClassTest_2 } from './classes/ClassTest_2';
 import { GenericExt } from './classes/GenericExt';
 import { ImplementedClass } from './classes/ImplementedClass';
 import { ArrayStringClass } from './classes/ArrayString/ArrayStringClass'
+import { ObjectArray } from './classes/ObjectArray';
 const port = 3002;
 const app = express();
 /*
@@ -42,22 +43,11 @@ new ArrayStringClass (
     `string~string~number~boolean~`,
 );
 
-console.log(`${arrayString.get(0)} type - ${typeof(arrayString.get(0))}`);
-console.log(arrayString);
+const objectArray = new ObjectArray<number>();
 
-console.log(`${arrayString.get(3)} type - ${typeof(arrayString.get(3))}`);
-console.log(arrayString);
-arrayString.add(15);
-
-console.log(`${arrayString.get(3)} type - ${typeof(arrayString.get(3))}`);
-console.log(arrayString);
-
-arrayString.definitelyNotForEach((element: string | number | boolean) => {
-    console.log(`element is ${element} type is ${typeof(element)}`);
-});
-
-arrayString.remove(4);
-console.log(arrayString);
+objectArray.set(10);
+objectArray.set(11);
+console.log(objectArray.get(0));
 
 app.get('/', (request : any, response : any) => {
     console.log(`URL: ${request.url}`);
