@@ -50,8 +50,6 @@ export class ArrayStringClass {
         let indexV;
         let indexT;
         for (let index = 0, indexElements = 0; index < this.values.length; index++) {
-            //console.log('fuck');
-            //console.log(`Just index ${index}`);
             
             
             if(this.values.charAt(index) === '~') {

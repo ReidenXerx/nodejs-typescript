@@ -23,6 +23,7 @@ import { GenericExt } from './classes/GenericExt';
 import { ImplementedClass } from './classes/ImplementedClass';
 import { ArrayStringClass } from './classes/ArrayString/ArrayStringClass'
 import { ObjectArray } from './classes/ObjectArray';
+import { Calculation } from './classes/calculation'
 const port = 3002;
 const app = express();
 /*
@@ -43,11 +44,19 @@ new ArrayStringClass (
     `string~string~number~boolean~`,
 );
 
+console.log(`Object array`);
+
+
 const objectArray = new ObjectArray<number>();
 
-objectArray.set(10);
-objectArray.set(11);
+objectArray.add(10);
+objectArray.add(11);
 console.log(objectArray.get(0));
+
+console.log(`Calculation percents`);
+
+const calculationObject = new Calculation();
+console.log(calculationObject.Calculate());
 
 app.get('/', (request : any, response : any) => {
     console.log(`URL: ${request.url}`);
