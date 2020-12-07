@@ -1,75 +1,113 @@
-export class ObjectArray<T> {
-  private values!: { [key: number]: T }; //!
-  private lastIndex: number = -1;
-  private length: number = 0;
+interface interfaceObjectArray<T> {
+    [key: number]: T;
+    add(element: T): void;
+    remove(index: number): void;
+    removeLast(): void;
+    forEach(callback: Function): void;
+    findIndex(searchElement: T): number;
+}
 
-  public constructor() {
-    this.values = {};
-  }
+export class ObjectArray<T> implements interfaceObjectArray<T> {
+    private lastIndex: number = -1;
+    public length: number = 0;
+    [key: number]: T;
 
-  // public length():number {
-  //     return Object.keys(this.values).length;
-  // };
-
-  public add(element: T) {
-    this.values[++this.lastIndex] = element;
-    this.length++;
-  }
-
-  public remove(index: number): void {
-    delete this.values[index];
-    this.length--;
-    //смещение
-  }
-
-  public removeLast(index: number): void {
-    delete this.values[index];
-    this.length--;
-    this.lastIndex--;
-    //смещение
-  }
-
-  public forEach(callback: Function): void {
-    for (const key in this.values) {
-      if (Object.prototype.hasOwnProperty.call(this.values, key)) {
-        const element = this.values[key];
-        callback(element);
-      }
-    }
-  }
-
-  public get(index: number): T {
-    return this.values[index];
-  }
-
-  public set(element: T, index: number): void {
-    if (index > 0) {
-      this.values[index] = element;
-    }
-  }
-  public findIndex(searchElement: T): number {
-    for (const key in this.values) {
-      if (Object.prototype.hasOwnProperty.call(this.values, key)) {
-        const element = this.values[key];
-        if (element === searchElement) {
-          return parseInt(key);
+    public getLength(): number {
+        let length = 0;
+        
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key) && parseInt(key)) {
+                length++;
+            }
         }
-      }
+        
+        this.length = length;
+        return this.length;
     }
-    return -1;
-  }
 
-  public find(searchElement: T): T | null {
-    for (const key in this.values) {
-      if (Object.prototype.hasOwnProperty.call(this.values, key)) {
-        const element = this.values[key];
-        if (element === searchElement) {
-          return this.values[key];
+    public getLast(): number {
+        let max = -1;
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key) && parseInt(key) && key > max) {
+                max = parseInt(key);
+            }
         }
-      }
+        this.lastIndex = max;
+        return this.lastIndex;
     }
-    return null;
-  }
+
+    public add(element: T) {
+        this.getLast();
+        this.getLength();
+        this[++this.lastIndex] = element;
+        this.length++;
+    }
+
+    public remove(index: number): void {
+        this.getLength();
+        if(this[index]) {
+            this.length--;
+            for (const key in this) {
+                if (Object.prototype.hasOwnProperty.call(this, key) && parseInt(key) && key > index) {
+                    this[parseInt(key) - 1] = this[parseInt(key)];
+                    delete this[parseInt(key)];
+                }
+            }
+        }
+    }
+
+    public removeLast(): void {
+        this.getLength();
+        this.getLast();
+        delete this[this.lastIndex];
+        this.length--;
+        this.lastIndex--;
+    }
+
+    public forEach(callback: Function): void {
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const element = this[key];
+                callback(element);
+            }
+        }
+    }
+    
+    public findIndex(searchElement: T): number {
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key)) {
+                const element = this[key];
+                if (element === searchElement) {
+                    return parseInt(key);
+                }
+            }
+        }
+        return -1;
+    }
+
+    public filter(callback: Function): ObjectArray<T> | null {
+        const result: ObjectArray<T> = new ObjectArray();
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key) && parseInt(key)) {
+                const element = this[parseInt(key)];
+                if (callback(element)) {
+                    result[parseInt(key)] = this[parseInt(key)];
+                }
+            }
+        }
+        return result ? result : null;
+    }
+
+    public map(callback: Function): ObjectArray<T> {
+        const result: ObjectArray<T> = new ObjectArray();
+        for (const key in this) {
+            if (Object.prototype.hasOwnProperty.call(this, key) && parseInt(key)) {
+                const element = this[parseInt(key)];
+                result[parseInt(key)] = callback(element, parseInt(key));
+            }
+        }
+        return result;
+    }
 }
 
 //map, filter, индексаторы тайпскрипт для обращения через []

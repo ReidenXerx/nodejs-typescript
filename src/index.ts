@@ -38,20 +38,45 @@ ImplementedClass_object.getProtected_interface();
 GenericExt_object.logAll();
 */
 
+
+const test = (a: number, b: number) => {
+    return a + b;
+}
+
+const test2 = () => test(10, 20);
+console.log(test2);//function
+console.log(test2());//30
+
+
 const arrayString =
 new ArrayStringClass (
     `string1~string2~10~true~`, 
     `string~string~number~boolean~`,
 );
 
+const array = [1,4,5,6,2];
+array[30] = 10;
+array.push(12);
+array.splice(3, 1);
+console.log(array);
+
 console.log(`Object array`);
 
 
 const objectArray = new ObjectArray<number>();
+objectArray[23] = 15;
 
 objectArray.add(10);
 objectArray.add(11);
-console.log(objectArray.get(0));
+console.log(objectArray[0]);
+console.log(objectArray[23]);
+objectArray.filter((element: number) => {
+    if(element > 0) {
+        return true;
+    }
+});
+console.log(objectArray);
+
 
 console.log(`Calculation percents`);
 
