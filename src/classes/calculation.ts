@@ -5,7 +5,7 @@ interface Calculated {
 
 export class Calculation {
     private stack: { [key: string]: number } = {
-        Activity: 0,
+        Activity: 100,
         ActivityBuilder: 0,
         RegardingBuilder: 0,
         XmlTag: 100,
@@ -16,8 +16,8 @@ export class Calculation {
         accountRequestsPreparedService: 100,
         accountRequestsService: 100,
         activitiesPreparationRequest: 100,
-        activityRequest: 0,
-        getFetchXML: 0,
+        activityRequest: 79,
+        getFetchXML: 100,
         chromeApiPromisifyer: 100,//77
         commonCrmWebApiService: 100,
         commonRequestService: 99,//99
@@ -35,9 +35,10 @@ export class Calculation {
         contactRequestsService: 100,//98
         commonScrapService: 100,//46
         searchService: 100,
-        parseDescription: 67,
-        prepareRequestData: 88,
+        parseDescription: 100,
+        prepareRequestData: 100,
         toDoListService: 100,
+        scrapAccountService: 100,
     }
 
     public Calculate(): Calculated {
