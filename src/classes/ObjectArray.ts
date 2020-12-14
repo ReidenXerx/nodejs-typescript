@@ -9,7 +9,7 @@ interface interfaceObjectArray<T> {
 
 export class ObjectArray<T> implements interfaceObjectArray<T> {
     private lastIndex: number = -1;
-    public length: number = 0;
+    public length: number = parseInt(Object.keys(this)[1]);
     [key: number]: T;
 
     public getLength(): number {

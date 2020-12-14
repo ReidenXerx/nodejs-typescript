@@ -16,7 +16,8 @@
 //множественное наследование в тайпскрипте
 //саморасширяющийся массив в тайпскрипте, дженерик, он не должен быть сделан на базе жс массива
 
-import express from 'express'
+import express, { request, response } from 'express'
+import axios from 'axios'
 import { AbstractExt } from './classes/AbstractsExt';
 import { ClassTest_2 } from './classes/ClassTest_2';
 import { GenericExt } from './classes/GenericExt';
@@ -24,6 +25,7 @@ import { ImplementedClass } from './classes/ImplementedClass';
 import { ArrayStringClass } from './classes/ArrayString/ArrayStringClass'
 import { ObjectArray } from './classes/ObjectArray';
 import { Calculation } from './classes/calculation'
+import Router, { RouterArray } from './classes/router'
 const port = 3002;
 const app = express();
 /*
@@ -37,8 +39,9 @@ AbstractsExt_object.getProtected();
 ImplementedClass_object.getProtected_interface();
 GenericExt_object.logAll();
 */
+const router = new Router(3003);
 
-
+/*
 const test = (a: number, b: number) => {
     return a + b;
 }
@@ -46,20 +49,21 @@ const test = (a: number, b: number) => {
 const test2 = () => test(10, 20);
 console.log(test2);//function
 console.log(test2());//30
-
-
+*/
+/*
 const arrayString =
 new ArrayStringClass (
     `string1~string2~10~true~`, 
     `string~string~number~boolean~`,
 );
-
+*/
+/*
 const array = [1,4,5,6,2];
 array[30] = 10;
 array.push(12);
 array.splice(3, 1);
 console.log(array);
-
+*/
 console.log(`Object array`);
 
 
@@ -78,21 +82,66 @@ objectArray.filter((element: number) => {
 console.log(objectArray);
 
 
-console.log(`Calculation percents`);
-
-const calculationObject = new Calculation();
-console.log(calculationObject.Calculate());
-
+/*
 app.get('/', (request : any, response : any) => {
     console.log(`URL: ${request.url}`);
     response.send('Hello, Server!');
 });
 
 app.get('/services', (req, res) => {
-     res.send('John')
+    res.send('John')
 })
+*/
+//axios
 
-// Start the server
+router.startServer();
+router.addRoute('/', (request: any, response: any) => {
+    console.log(`URL: ${request.url}`);
+    response.send('Hello, Server!');
+});
+
+axios.get('http://localhost:3003/', {
+    params: {
+      ID: 12345
+    }
+  })
+  .then((response) => {
+      console.log(response.data);
+      
+  })
+
+const routerArray = new RouterArray<number>(3004);  
+routerArray.startServer();
+routerArray.addElement();
+routerArray.setElement();
+
+axios.get('http://localhost:3004/add/', {
+    params: {
+      element: 10,
+    }
+  })
+  .then((response) => {
+      console.log(response.data);
+      
+  })
+
+  axios.get('http://localhost:3004/set/', {
+    params: {
+        index: 10,
+        element: 15,
+    }
+  })
+  .then((response) => {
+      console.log(response.data);
+      
+  })
+
+  // Start the server
 const server = app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 });
+
+console.log(`Calculation percents`);
+
+const calculationObject = new Calculation();
+console.log(calculationObject.Calculate());
