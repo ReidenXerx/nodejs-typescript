@@ -1,5 +1,6 @@
-import express, { Express } from 'express'
-import { Server } from 'http';
+import express, { Express, response } from 'express'
+import { Server, createServer } from 'http';
+import  { parse } from 'url';
 import { Type } from 'typescript';
 import { ObjectArray } from './ObjectArray'
 
@@ -44,5 +45,61 @@ export class RouterArray<T> extends Router {
             this.objectArray[request.query.index] = request.query.element;
             response.send(this.objectArray);
         });
+    }
+}
+
+export class RouterNodeJs<T> {
+    public objectArray: ObjectArray<T> = new ObjectArray<T>();
+    private port: number;
+
+    public constructor(port: number) {
+        this.port = port;
+    }
+
+    public startServer() {
+        createServer((request, response) => {
+            const url = request.url;
+            console.log(url);
+            
+            let urlObject;
+            let query;
+            if(url) {
+                urlObject = parse(url, true);
+                query = urlObject.query;
+            }
+            
+             if(urlObject?.pathname ==='/about' && query) {
+                console.log(`server: ${query.keyOne}`);
+                
+                response.write(
+                    JSON.stringify(
+                        {
+                            uselessString: 'string',
+                            value: 10.
+                        }
+                    )
+                ); 
+                response.end();
+            }
+
+            else if(urlObject?.pathname ==='/add' && query) {
+                this.objectArray.add(query.keyOne as any);
+                console.log(this.objectArray);
+                
+                response.write(
+                    JSON.stringify(
+                        this.objectArray
+                    )
+                ); 
+                response.end();
+            }
+
+            else {
+                response.write('Hello World'); 
+                response.end();
+            }
+        }).listen(this.port, () => {
+            console.log(`Example nodejs app listening at http://localhost:${this.port}`);
+        })
     }
 }

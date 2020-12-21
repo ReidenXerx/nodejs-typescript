@@ -25,7 +25,9 @@ import { ImplementedClass } from './classes/ImplementedClass';
 import { ArrayStringClass } from './classes/ArrayString/ArrayStringClass'
 import { ObjectArray } from './classes/ObjectArray';
 import { Calculation } from './classes/calculation'
-import Router, { RouterArray } from './classes/router'
+import Router, { RouterArray, RouterNodeJs } from './classes/router'
+import { get } from 'http';
+import { parse, format } from 'url';
 const port = 3002;
 const app = express();
 /*
@@ -92,8 +94,9 @@ app.get('/services', (req, res) => {
     res.send('John')
 })
 */
-//axios
 
+/*
+//axios
 router.startServer();
 router.addRoute('/', (request: any, response: any) => {
     console.log(`URL: ${request.url}`);
@@ -109,7 +112,9 @@ axios.get('http://localhost:3003/', {
       console.log(response.data);
       
   })
+*/
 
+/*
 const routerArray = new RouterArray<number>(3004);  
 routerArray.startServer();
 routerArray.addElement();
@@ -140,7 +145,43 @@ axios.get('http://localhost:3004/add/', {
 const server = app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 });
+*/
 
+const requestUrl = parse(format({
+    protocol: 'http',
+    hostname: 'localhost',
+    pathname: '/add',
+    port: 3010,
+    query: {
+        keyOne: 10,
+    }
+}));
+console.log(requestUrl);
+
+const routerNodeJs = new RouterNodeJs<number>(3010);
+routerNodeJs.startServer();
+
+const req = get(
+{
+    hostname: requestUrl.hostname,
+    port: requestUrl.port,
+    path: requestUrl.path,
+}, (res) => {
+    res.on(`data`, (response) => {
+        const data = JSON.parse(response);
+        console.log(`client: ${data}`);
+
+    })
+    
+});
+/*
+get('http://localhost:3011/about', (res) => {
+    res.on('data', (data) => {
+        console.log(data);
+        
+    });
+  });
+*/
 console.log(`Calculation percents`);
 
 const calculationObject = new Calculation();
