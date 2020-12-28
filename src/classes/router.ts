@@ -1,8 +1,10 @@
 import express, { Express, response } from 'express'
 import { Server, createServer } from 'http';
-import  { parse } from 'url';
+import  { parse, UrlWithParsedQuery } from 'url';
 import { Type } from 'typescript';
 import { ObjectArray } from './ObjectArray'
+import { inter, RouteObject } from './routeObject';
+import { ParsedUrlQuery } from 'querystring';
 
 export default class Router {
     private port: number;
@@ -48,12 +50,22 @@ export class RouterArray<T> extends Router {
     }
 }
 
-export class RouterNodeJs<T> {
-    public objectArray: ObjectArray<T> = new ObjectArray<T>();
+export class RouterNodeJs {
+    public objectArray: ObjectArray<number> = new ObjectArray<number>();
     private port: number;
+    private restrictedRoutes: Array<RouteObject> = [];
 
     public constructor(port: number) {
         this.port = port;
+    }
+
+    public addRoute({
+        path,
+        callback,
+    }: inter) {
+        this.restrictedRoutes.push(
+            new RouteObject({ path, callback }),
+        );
     }
 
     public startServer() {
@@ -61,36 +73,38 @@ export class RouterNodeJs<T> {
             const url = request.url;
             console.log(url);
             
-            let urlObject;
-            let query;
+            let urlObject: UrlWithParsedQuery | null = null;
+            let query: ParsedUrlQuery;
             if(url) {
                 urlObject = parse(url, true);
                 query = urlObject.query;
             }
             
-             if(urlObject?.pathname ==='/about' && query) {
-                console.log(`server: ${query.keyOne}`);
-                
+             if(urlObject?.pathname && query!) {
+                let forReturn;
+                this.restrictedRoutes.filter((route: RouteObject) => {
+                    if(route.Path === urlObject?.pathname) {
+                        console.log(query);
+                        forReturn = route.Callback(query)
+                    }
+                });
                 response.write(
                     JSON.stringify(
-                        {
-                            uselessString: 'string',
-                            value: 10.
-                        }
+                        forReturn
                     )
-                ); 
+                );
                 response.end();
             }
 
-            else if(urlObject?.pathname ==='/add' && query) {
-                this.objectArray.add(query.keyOne as any);
+            else if(urlObject?.pathname ==='/add' && query!) {
+                this.objectArray.add(query!.keyOne as any);
                 console.log(this.objectArray);
                 
                 response.write(
                     JSON.stringify(
                         this.objectArray
                     )
-                ); 
+                );
                 response.end();
             }
 

@@ -153,13 +153,22 @@ const requestUrl = parse(format({
     pathname: '/add',
     port: 3010,
     query: {
-        keyOne: 10,
+        element: 10,
     }
 }));
 console.log(requestUrl);
 
-const routerNodeJs = new RouterNodeJs<number>(3010);
+const routerNodeJs = new RouterNodeJs(3010);
 routerNodeJs.startServer();
+routerNodeJs.addRoute(
+    {
+        path: requestUrl.pathname!,//почему при убирании знака вопроса
+        callback: ({ element }: { element: number }) => {
+            routerNodeJs.objectArray.add(element);
+            return routerNodeJs.objectArray[0];
+        }
+    }
+)
 
 const req = get(
 {
@@ -174,6 +183,8 @@ const req = get(
     })
     
 });
+
+
 /*
 get('http://localhost:3011/about', (res) => {
     res.on('data', (data) => {
